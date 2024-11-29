@@ -39,4 +39,4 @@ for idx, image in enumerate(images, 1):  # idx починається з 1
     print(f'\tcoords of {Path(image).stem}: {x}, {y}')
     print(f'\tprocessed in {time.time() - loop_time} sec\n')
 
-print(f'[DEBUG] Total execution time: {time.time() - program_start_time} sec')
+    

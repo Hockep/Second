@@ -45,4 +45,4 @@ def crop(input_path, output_dir):
         # Зберегти квадрат як окремий файл
         output_file = os.path.join(output_dir, f"{i + 1}.png")
         cv2.imwrite(output_file, cropped_img)
-        
+

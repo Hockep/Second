@@ -15,7 +15,7 @@ def photo2coords(frames_dir, superpoints_dir, rank_dir, csv_name, map_dir):
     return formatted_lat, formatted_lon
 
 program_start_time = time.time()
-print(f'[DEBUG] Start time: {time.ctime()}\n')
+# print(f'[DEBUG] Start time: {time.ctime()}\n')
 images = [
     './camera/Bing1.png',
     './camera/Bing2.png',
@@ -31,12 +31,12 @@ map_dir = './img'
 
 
 for idx, image in enumerate(images, 1):  # idx починається з 1
-    print(f'\t[DEBUG] {idx}/{len(images)} - Processing {Path(image).stem}')
+    print(f'\t[{idx}/{len(images)}] - Processing {Path(image).stem}')
     loop_time = time.time()
     csv_name = Path(image).stem + '.csv'
     crop.crop(image, frames_dir)
     x, y = photo2coords(frames_dir, superpoints_dir, rank_dir, csv_name, map_dir)
     print(f'\tcoords of {Path(image).stem}: {x}, {y}')
-    print(f'\tprocessed in {time.time() - loop_time} sec\n')
+    # print(f'\tprocessed in {time.time() - loop_time} sec\n')
 
     

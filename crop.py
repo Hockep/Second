@@ -1,5 +1,5 @@
 import os
-from PIL import Image
+import cv2
 
 def crop(input_path, output_dir):
     # Очистити вихідну директорію
@@ -12,33 +12,37 @@ def crop(input_path, output_dir):
                 os.remove(file_path)
 
     # Відкрити вхідне зображення
-    with Image.open(input_path) as img:
-        width, height = img.size
-        smaller_side = min(width, height)  # Менша сторона
-        larger_side = max(width, height)
+    img = cv2.imread(input_path, cv2.IMREAD_GRAYSCALE)
+    height, width = img.shape
+    smaller_side = min(width, height)  # Менша сторона
+    larger_side = max(width, height)
 
-        # Визначити кількість зображень (3)
-        step = (larger_side - smaller_side) // 2  # Відстань для зміщення
+    # Визначити кількість зображень (3)
+    step = (larger_side - smaller_side) // 2  # Відстань для зміщення
 
-        for i, offset in enumerate([0, step, larger_side - smaller_side]):
-            if width > height:
-                # Зміщення вздовж ширини
-                left = offset
-                upper = 0
-            else:
-                # Зміщення вздовж висоти
-                left = 0
-                upper = offset
+    for i, offset in enumerate([0, step, larger_side - smaller_side]):
+        if width > height:
+            # Зміщення вздовж ширини
+            left = offset
+            upper = 0
+        else:
+            # Зміщення вздовж висоти
+            left = 0
+            upper = offset
 
-            right = left + smaller_side
-            lower = upper + smaller_side
+        right = left + smaller_side
+        lower = upper + smaller_side
 
-            # Вирізати квадрат
-            cropped_img = img.crop((left, upper, right, lower))
+        # Вирізати квадрат
+        cropped_img = img[upper:lower, left:right]
 
-            # Перетворити на чорно-біле
-            cropped_img = cropped_img.convert('L')
+        # Видалити шум
+        cropped_img = cv2.medianBlur(cropped_img, 3)
 
-            # Зберегти квадрат як окремий файл
-            output_file = os.path.join(output_dir, f"{i + 1}.png")
-            cropped_img.save(output_file)
+        # Відрегулювати яскравість та контрастність
+        cropped_img = cv2.convertScaleAbs(cropped_img, alpha=1.5, beta=20)
+
+        # Зберегти квадрат як окремий файл
+        output_file = os.path.join(output_dir, f"{i + 1}.png")
+        cv2.imwrite(output_file, cropped_img)
+        

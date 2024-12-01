@@ -1,6 +1,5 @@
 import cv2
 import torch
-import time
 import os
 from pathlib import Path
 import pickle

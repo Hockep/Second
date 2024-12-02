@@ -3,8 +3,6 @@ import pandas as pd
 import shutil
 
 def summary4csv(main_directory, output_csv):
-    # Шлях до головної папки
-
     # Шлях до файлу summary_filtered_sorted.csv
     output_csv_path = os.path.join(main_directory, output_csv)
 
@@ -12,14 +10,13 @@ def summary4csv(main_directory, output_csv):
     if os.path.exists(output_csv_path):
         os.remove(output_csv_path)
 
-    # Ініціалізація словника для сумування
     summary_data = {}
 
     # Перевірка кожної підпапки
     for subdir in os.listdir(main_directory):
         subdir_path = os.path.join(main_directory, subdir)
         if os.path.isdir(subdir_path):
-            # Знайти CSV файл
+            # Пошук CSV файлу у підпапці
             csv_files = [f for f in os.listdir(subdir_path) if f.endswith('.csv')]
             if len(csv_files) != 1:
                 continue
@@ -31,7 +28,7 @@ def summary4csv(main_directory, output_csv):
             # Перетворення стовпця `score` у числовий формат
             data['score'] = data['score'].str.rstrip('%').astype(float)
             
-            # Сумування значень третього стовпця за іменами
+            # Сумування значень стовпця `score` за іменами зображень
             for _, row in data.iterrows():
                 image = row['image']
                 score = row['score']

@@ -5,15 +5,20 @@ from concurrent.futures import ThreadPoolExecutor
 import cv2
 
 def is_black_image(image_path):
+    # Відкриваємо зображення та перетворюємо його у масив
     image = Image.open(image_path)
     image_array = np.array(image)
+    # Перевіряємо, чи всі пікселі чорні
     return np.all(image_array == 0)
 
 def has_transparent_pixels(image_path):
+    # Відкриваємо зображення та перетворюємо його у формат RGBA
     image = Image.open(image_path).convert("RGBA")
     image_array = np.array(image)
+    # Рахуємо кількість прозорих пікселів
     transparent_pixels = np.sum(image_array[:, :, 3] < 255)
     total_pixels = image_array.shape[0] * image_array.shape[1]
+    # Повертаємо відсоток прозорих пікселів
     return transparent_pixels / total_pixels
 
 def process_image(filename, directory):
@@ -22,6 +27,7 @@ def process_image(filename, directory):
         png_path = os.path.join(directory, filename)
         dat_path = os.path.join(directory, filename.replace('.png', '.dat'))
 
+        # Перевіряємо, чи зображення чорне або має більше 33% прозорих пікселів
         if is_black_image(png_path) or has_transparent_pixels(png_path) > 0.33:
             if os.path.exists(png_path):
                 os.remove(png_path)
@@ -43,10 +49,12 @@ def process_image(filename, directory):
             print(f"Processed and saved: {png_path}")
 
 def delete_black_images_and_pairs(directory):
+    # Використовуємо ThreadPoolExecutor для паралельної обробки зображень
     with ThreadPoolExecutor() as executor:
         filenames = os.listdir(directory)
         futures = [executor.submit(process_image, filename, directory) for filename in filenames]
         for future in futures:
             future.result()
 
+# Запускаємо функцію для видалення чорних зображень та їх пар
 delete_black_images_and_pairs('./img')

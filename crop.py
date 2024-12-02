@@ -2,47 +2,46 @@ import os
 import cv2
 
 def crop(input_path, output_dir):
-    # Очистити вихідну директорію
+    # Перевіряємо, чи існує вихідний каталог, якщо ні - створюємо його
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     else:
+        # Якщо каталог існує, видаляємо всі файли в ньому
         for file in os.listdir(output_dir):
             file_path = os.path.join(output_dir, file)
             if os.path.isfile(file_path):
                 os.remove(file_path)
 
-    # Відкрити вхідне зображення
+    # Завантажуємо зображення у відтінках сірого
     img = cv2.imread(input_path, cv2.IMREAD_GRAYSCALE)
     height, width = img.shape
-    smaller_side = min(width, height)  # Менша сторона
-    larger_side = max(width, height)
+    smaller_side = min(width, height)  # Знаходимо меншу сторону зображення
+    larger_side = max(width, height)  # Знаходимо більшу сторону зображення
 
-    # Визначити кількість зображень (3)
-    step = (larger_side - smaller_side) // 2  # Відстань для зміщення
+    # Обчислюємо крок для обрізки
+    step = (larger_side - smaller_side) // 2  
 
+    # Обрізаємо зображення на три частини
     for i, offset in enumerate([0, step, larger_side - smaller_side]):
         if width > height:
-            # Зміщення вздовж ширини
             left = offset
             upper = 0
         else:
-            # Зміщення вздовж висоти
             left = 0
             upper = offset
 
         right = left + smaller_side
         lower = upper + smaller_side
 
-        # Вирізати квадрат
+        # Обрізаємо зображення
         cropped_img = img[upper:lower, left:right]
 
-        # Видалити шум
+        # Видаляємо шум за допомогою медіанного фільтра
         cropped_img = cv2.medianBlur(cropped_img, 3)
 
-        # Відрегулювати яскравість та контрастність
+        # Регулюємо яскравість та контрастність
         cropped_img = cv2.convertScaleAbs(cropped_img, alpha=1.5, beta=20)
 
-        # Зберегти квадрат як окремий файл
+        # Зберігаємо обрізане зображення у вихідний каталог
         output_file = os.path.join(output_dir, f"{i + 1}.png")
         cv2.imwrite(output_file, cropped_img)
-

@@ -14,7 +14,7 @@ def photo2coords(frames_dir, superpoints_dir, rank_dir, csv_name, map_dir):
     # Створюємо файл з рангами для кожного кадру
     superpoints2rank.superpoints2rank(superpoints_dir, rank_dir)
 
-    # Створюємо файл з рангами кожної групи рангів
+    # Створюємо файл з сумою рангів кожної групи
     summary4csv.summary4csv(rank_dir, csv_name)
 
     # Отримуємо координати тайлу з найвищим рангом співпадіння

@@ -3,10 +3,10 @@ import pandas as pd
 import shutil
 
 def summary4csv(main_directory, output_csv):
-    # Шлях до файлу summary_filtered_sorted.csv
+    # Шлях до файлу
     output_csv_path = os.path.join(main_directory, output_csv)
 
-    # Перевірка чи існує файл summary_filtered_sorted.csv, якщо так то видаляємо
+    # Перевірка чи існує файл, якщо так то видаляємо
     if os.path.exists(output_csv_path):
         os.remove(output_csv_path)
 

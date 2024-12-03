@@ -45,3 +45,5 @@ def crop(input_path, output_dir):
         # Зберігаємо обрізане зображення у вихідний каталог
         output_file = os.path.join(output_dir, f"{i + 1}.png")
         cv2.imwrite(output_file, cropped_img)
+
+crop('./camera/600.png', './c')  # Виклик функції crop для тестування

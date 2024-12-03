@@ -27,8 +27,8 @@ def process_image(filename, directory):
         png_path = os.path.join(directory, filename)
         dat_path = os.path.join(directory, filename.replace('.png', '.dat'))
 
-        # Перевіряємо, чи зображення чорне або має більше 33% прозорих пікселів
-        if is_black_image(png_path) or has_transparent_pixels(png_path) > 0.33:
+        # Перевіряємо, чи зображення чорне або має більше половини прозорих пікселів
+        if is_black_image(png_path) or has_transparent_pixels(png_path) > 0.5:
             if os.path.exists(png_path):
                 os.remove(png_path)
             if os.path.exists(dat_path):
@@ -48,13 +48,10 @@ def process_image(filename, directory):
             cv2.imwrite(png_path, image)
             print(f"Processed and saved: {png_path}")
 
-def delete_black_images_and_pairs(directory):
+def filter_map(directory):
     # Використовуємо ThreadPoolExecutor для паралельної обробки зображень
     with ThreadPoolExecutor() as executor:
         filenames = os.listdir(directory)
         futures = [executor.submit(process_image, filename, directory) for filename in filenames]
         for future in futures:
             future.result()
-
-# Запускаємо функцію для видалення чорних зображень та їх пар
-delete_black_images_and_pairs('./img')

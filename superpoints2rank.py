@@ -7,7 +7,6 @@ from torch import nn
 from copy import deepcopy
 import pandas as pd
 import shutil
-import time
 
 def MLP(channels: list, do_bn=True):
     # Створюємо послідовну модель для MLP
